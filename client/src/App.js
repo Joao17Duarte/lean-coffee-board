@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Header from './components/Header'
 import createCard from './services/createCard'
 import getCards from './services/getCards'
 import getUsers from './services/getUsers'
@@ -26,6 +27,7 @@ function App() {
 
   return (
     <div>
+      <Header title="Boring Covfefe" />
       <h2>Users:</h2>
       {users.map(user => (
         <div key={user._id}>
