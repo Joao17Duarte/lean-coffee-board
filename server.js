@@ -1,7 +1,5 @@
 const express = require('express')
 const mongoose = require('mongoose')
-const User = require('./models/User')
-const Card = require('./models/Card')
 
 mongoose
   .connect('mongodb://localhost/lean-coffee-board', {
@@ -15,50 +13,13 @@ const app = express()
 
 app.use(express.json()) // add middleware for json data
 
-app.get('/api/users', async (req, res) => {
-  res.json(await User.find())
-})
+app.use('/api/users', require('./routes/users'))
 
-app.post('/api/users', async (req, res) => {
-  res.json(await User.create(req.body))
-})
+app.use('api/cards', require('./routes/cards'))
 
-app.get('/api/users/:id', async (req, res) => {
-  const { id } = req.params
-  res.json(await User.findOne({ id }))
-})
-
-app.delete('/api/users/:id', async (req, res) => {
-  const { id } = req.params
-  res.json(await User.deleteOne({ id }))
-})
-
-/**
- *
- *
- */
-
-app.get('/api/cards', async (req, res) => {
-  res.json(await Card.find())
-})
-
-app.post('/api/cards', async (req, res) => {
-  res.json(await Card.create(req.body))
-})
-
-app.get('/api/cards/:id', async (req, res) => {
-  const { id } = req.params
-  res.json(await Card.findOne({ id }))
-})
-
-app.patch('/api/cards/:id', async (req, res) => {
-  const { id } = req.params
-  res.json(await Card.updateOne({ id }))
-})
-
-app.delete('/api/cards', async (req, res) => {
-  const { id } = req.params
-  res.json(await Card.deleteOne({ id }))
+app.use((err, req, res, next) => {
+  console.log(err.message)
+  res.json({ error: err.message })
 })
 
 app.listen(3000, () => {
