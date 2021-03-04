@@ -1,7 +1,5 @@
 const express = require('express')
-const { v4 } = require('uuid')
 const mongoose = require('mongoose')
-const User = require('./models/User')
 
 mongoose
   .connect('mongodb://localhost/lean-coffee-board', {
@@ -15,27 +13,15 @@ const app = express()
 
 app.use(express.json()) // add middleware for json data
 
-app.get('/api/users', async (req, res) => {
-  res.json(await User.find())
+app.use('/api/users', require('./routes/users'))
+
+app.use('api/cards', require('./routes/cards'))
+
+app.use((err, req, res, next) => {
+  console.log(err.message)
+  res.json({ error: err.message })
 })
 
-app.get('/api/users/:id', async (req, res) => {
-  const { id } = req.params
-  res.json(await User.findOne({ id }))
-})
-
-app.delete('/api/users/:id', async (req, res) => {
-  const { id } = req.params
-  res.json(await User.deleteOne({ id }))
-})
-
-app.post('/api/users', async (req, res) => {
-  res.json(await User.create(req.body))
-})
-
-app.get('/api/cards', (req, res) => {
-  res.json([{ title: 'First card' }])
-})
 app.listen(3000, () => {
-  console.log('Server started at http://localhost:3000')
+  console.log('Server started at PORT:3000')
 })
